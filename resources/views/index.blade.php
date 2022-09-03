@@ -53,13 +53,34 @@
                     <div class="list-item">
                         <p class="list-date">2022/09/03</p>
                         <li class="list-flex">
-                            <div class="list-checkbox" @click="checked">
+                            <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
                             <p class="list-text">献立アプリ</p>
                             <p class="list-money">¥1,000</p>
-                            <div :class="{line: line}"></div>
+                        </li>
+                    </div>
+                    <div class="list-item">
+                        <p class="list-date">2022/09/03</p>
+                        <li class="list-flex">
+                            <div class="list-checkbox">
+                                <input id="checkbox" class="checkbox" type="checkbox">
+                                <label for="checkbox"></label>
+                            </div>
+                            <p class="list-text">献立アプリ</p>
+                            <p class="list-money">¥1,000</p>
+                        </li>
+                    </div>
+                    <div class="list-item">
+                        <p class="list-date">2022/09/03</p>
+                        <li class="list-flex">
+                            <div class="list-checkbox">
+                                <input id="checkbox" class="checkbox" type="checkbox">
+                                <label for="checkbox"></label>
+                            </div>
+                            <p class="list-text">献立アプリ</p>
+                            <p class="list-money">¥1,000</p>
                         </li>
                     </div>
                 </ul>
@@ -77,13 +98,5 @@
 <script>
     const app = new Vue({
         el: '#app',
-        data: {
-            line: false,
-        },
-        methods: {
-            checked() {
-                this.line = !this.line;
-            },
-        },
     });
 </script>

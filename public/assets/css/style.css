@@ -110,14 +110,14 @@ header {
     padding: 8px 0;
 }
 
-.line {
+/* .line {
     position: absolute;
     right: 5%;
     top: 50%;
     width: 78%;
     height: 2px;
     background-color: #ccc;
-}
+} */
 
 .list-checkbox {
     padding: 12px;
