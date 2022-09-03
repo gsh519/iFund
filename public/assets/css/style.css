@@ -1,5 +1,12 @@
 @charset 'utf-8';
 
+:root {
+    --main-color: rgba(43, 174, 0, 0.749);
+}
+
+/* 候補カラー */
+/* #7cae6cbf */
+
 html {
     font-family: 'ヒラギノ丸ゴ ProN',
         'Hiragino Maru Gothic ProN',
@@ -10,293 +17,150 @@ html {
 }
 
 body {
-    background-color: #5dbaba;
+    background-color: #f8f8f8;
 }
 
-/* レイアウト */
 header {
-    background-color: #fff;
-    border-bottom: 1px solid rgba(0, 0, 0, .15);
-}
-
-footer {
-    z-index: 9999;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid rgba(0, 0, 0, .15);
-}
-
-.wrapper {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.flex {
-    display: flex;
-}
-
-/* ヘッダー */
-
-.header-flex {
-    padding: 8px 12px;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.header-flex__logo {
-    max-width: 60px;
-    margin: 0;
-}
-
-.header-flex__logo a {
-    display: block;
-}
-
-.hamburger-menu {
-    position: relative;
-    width: 24px;
-    height: 24px;
-}
-
-.hamburger-menu div {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 1px;
-    width: 100%;
-    background-color: #777;
-}
-
-.hamburger-menu i {
-    color: #777;
-    font-size: 26px;
-}
-
-/* メイン */
-
-.main {
-    margin-bottom: 69px;
-}
-
-.main-inner {
-    max-width: 92%;
-    padding: 4% 4% 12% 4%;
-    background-color: #5dbaba;
+    padding: 16px 8px;
+    background-color: var(--main-color);
     text-align: center;
     color: #fff;
 }
 
-.current-spending {
-    padding: 20px 0;
-}
+/* --------------------------------------- */
 
-.current-spending__title {
-    margin-bottom: 18px;
-    font-size: 30px;
-}
-
-.current-spending__spending {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin: 0 auto;
-    padding: 10px 30px 10px 10px;
-    border: 5px solid #fff;
-}
-
-.current-spending__spending p {
-    font-size: 42px;
-    font-weight: bold;
-    color: #f0ffb7;
-}
-
-.current-spending__spending span {
-    margin-right: 6px;
-    font-size: 36px;
-    font-weight: bold;
-}
-
-.spending-history__title {
-    font-size: 30px;
-    margin: 20px 0;
-}
-
-.spending-history__list {
-    max-width: 90%;
-    margin: 0 auto;
-    padding-bottom: 20px;
-}
-
-.spending-history__flex {
-    align-items: baseline;
-}
-
-.spending-history__flex > p {
-    margin-bottom: 2px;
-    text-align: left;
-}
-
-.spending-history__flex>div {
+.swipe-wrapper {
     background-color: #fff;
-    padding: 8px;
-    text-align: right;
-    color: #777;
+    box-shadow: 1px 1px 1px 1px #ccc;
 }
 
-.spending-history__list li {
-    padding: 6px 0;
-}
-
-/* .spending-history__list p {
-    margin-right: 20px;
-} */
-
-.spending-history__list h2 {
-    font-size: 30px;
-}
-
-.history-title {
-    font-size: 30px;
-    margin: 20px 0;
-}
-
-.history-list {
-    max-width: 90%;
-    margin: 0 auto;
-    padding-bottom: 20px;
-}
-
-.history-list__item {
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 12px 6px 0px;
-    border-bottom: 1px solid #fff;
-}
-
-.history-list__item > h2 {
-    font-size: 30px;
-}
-
-.more-btn {
+.swipe-list {
     display: flex;
     align-items: center;
 }
 
-.more-btn:before,
-.more-btn:after {
-    content: "";
-    height: 1px;
-    flex-grow: 1;
-    background-color: #fff;
-}
-
-.more-btn:before {
-    margin-right: 1rem;
-}
-
-.more-btn:after {
-    margin-left: 1rem;
-}
-
-/* フッター */
-
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    border-top: 1px solid rgba(0, 0, 0, .15);
-}
-
-.footer-flex {
-    padding: 10px;
-    align-items: center;
-}
-
-.footer-flex__list {
+.swipe-list li {
     width: calc(100% / 3);
+    padding: 16px 8px;
     text-align: center;
+    font-size: 20px;
 }
 
-.footer-flex__list i {
-    font-size: 30px;
-    color: #777;
+.swipe-list li.active {
+    border-bottom: 3px solid var(--main-color);
 }
 
-.footer-flex__list i.action {
-    color: #5dbaba;
+/* --------------------------------------- */
+
+.amount-wrapper {
+    padding: 30px 24px 0;
 }
 
-.footer-flex__list p {
-    margin-top: 8px;
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: #777;
-}
-
-/* form関連 */
-input[name='submit'] {
-    display: block;
-    font-size: 24px;
-    margin: 0 auto;
-    border-radius: 15px;
-    padding: 8px;
+.amount-area {
+    padding: 16px;
     background-color: #fff;
-    color: #5dbaba;
-    border: 1px solid transparent;
-    font-weight: bold;
-    font-family: 'ヒラギノ丸ゴ ProN',
-        'Hiragino Maru Gothic ProN',
-        'ヒラギノ角ゴシック',
-        'Hiragino Sans',
-        'ＭＳ ゴシック',
-        sans-serif;
+    border-radius: 16px;
 }
 
-input[name='spending'] {
-    margin: 0 auto 20px;
-    display: block;
-    width: 50%;
-    font-size: 30px;
-    padding: 8px;
-    outline: #fff;
-    color: #777;
-    border: 1px solid transparent;
+.amount-area > p {
+    color: #666;
+}
+
+.amount {
+    font-size: 36px;
+    text-align: right;
+    margin-top: 8px;
+    border-bottom: 1px solid #ddd;
+    color: #555;
+}
+
+/* --------------------------------------- */
+
+.list-wrapper {
+    padding: 8px 24px 30px;
+}
+
+.list-header {
+    margin: 16px 0;
+    color: #666;
 }
 
 .list {
-    text-align: left;
-    color: #999;
-    padding: 10px 16px 0;
-    font-size: 24px;
-}
-
-.list li {
     background-color: #fff;
-    border-radius: 10px;
-    padding: 12px;
-    margin: 12px 4px;
+    border-radius: 16px;
 }
 
-.plus-circle {
+.list-item {
+    border-top: 1px solid #ddd;
+}
+
+.list-item:first-child {
+    border-top: none;
+}
+
+.list-date {
+    padding: 12px 12px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.list-flex {
+    display: flex;
+}
+
+.list-checkbox {
+    padding: 12px;
+}
+
+.list-checkbox > label {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid #000;
+}
+
+.list-checkbox input[type=checkbox] {
+    display: none;
+}
+
+.list-text {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.list-money {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* --------------------------------------- */
+
+.plus-btn {
     position: fixed;
-    bottom: 12%;
-    right: 5%;
-    width: 40px;
-    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 12px;
-    background-color: #fff;
+    font-size: 2rem;
+    right: 5%;
+    bottom: 12%;
+    width: 40px;
+    height: 40px;
+    background-color: var(--main-color);
+    padding: 16px;
     border-radius: 50%;
-    color: #777;
-}
-
-.plus-circle > div {
-    font-size: 24px;
+    color: #fff;
 }
