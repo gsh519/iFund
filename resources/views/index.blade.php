@@ -38,7 +38,7 @@
             <div class="amount-wrapper">
                 <div class="amount-area">
                     <p>残金額</p>
-                    <h2 class="amount">¥125,329</h2>
+                    <h2 class="amount" ref="amount">¥125,329</h2>
                 </div>
             </div>
             <!-- リスト -->
@@ -49,45 +49,86 @@
                         削除
                     </p>
                 </div>
-                <ul class="list">
-                    <div class="list-item">
+                <ul class="list" ref="list">
+                    <li class="list-item">
                         <p class="list-date">2022/09/03</p>
-                        <li class="list-flex">
+                        <div class="list-flex">
                             <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
                             <p class="list-text">献立アプリ</p>
                             <p class="list-money">¥1,000</p>
-                        </li>
-                    </div>
-                    <div class="list-item">
+                        </div>
+                    </li>
+                    <li class="list-item">
                         <p class="list-date">2022/09/03</p>
-                        <li class="list-flex">
+                        <div class="list-flex">
                             <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
                             <p class="list-text">献立アプリ</p>
                             <p class="list-money">¥1,000</p>
-                        </li>
-                    </div>
-                    <div class="list-item">
+                        </div>
+                    </li>
+                    <li class="list-item">
                         <p class="list-date">2022/09/03</p>
-                        <li class="list-flex">
+                        <div class="list-flex">
                             <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
                             <p class="list-text">献立アプリ</p>
                             <p class="list-money">¥1,000</p>
-                        </li>
-                    </div>
+                        </div>
+                    </li>
+
+                    <!-- クローン用 -->
+                    <li class="list-item" ref="list-item">
+                        <p class="list-date">2022/09/03</p>
+                        <div class="list-flex">
+                            <div class="list-checkbox">
+                                <input id="checkbox" class="checkbox" type="checkbox">
+                                <label for="checkbox"></label>
+                            </div>
+                            <p class="list-text" ref="list-text"></p>
+                            <p class="list-money" ref="list-money"></p>
+                        </div>
+                    </li>
+
                 </ul>
             </div>
 
-            <div class="plus-btn">
+            <div class="plus-btn" @click="showCreateInput">
                 <i class="fas fa-plus"></i>
+            </div>
+            <div class="input-area" v-if="plus_btn_flag">
+                <div class="input-area-wrapper">
+                    <!-- テキスト -->
+                    <div class="input-head">
+                        <p class="info">支出の入力</p>
+                        <div class="xmark" @click="close"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="payment">
+                        <p class="payment-text">メモ</p>
+                        <div class="payment-input">
+                            <input type="text" v-model="memo" required>
+                        </div>
+                    </div>
+                    <div class="payment">
+                        <p class="payment-text">支出</p>
+                        <div class="payment-input">
+                            <input type="number" v-model="payment" required>
+                        </div>
+                    </div>
+
+                    <div class="store-btn" @click="store">
+                        <button>
+                            保存
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -98,5 +139,45 @@
 <script>
     const app = new Vue({
         el: '#app',
+        data: {
+            plus_btn_flag: false,
+            memo: '',
+            payment: '',
+            list_text: '',
+            list_money: '',
+        },
+        mounted() {},
+        methods: {
+            showCreateInput() {
+                this.plus_btn_flag = true;
+            },
+            close() {
+                this.plus_btn_flag = false;
+            },
+            store() {
+                if (this.memo === '' || this.payment === '' || this.payment === '0') {
+                    return;
+                }
+                // リストに値セット
+                this.list_text = this.memo;
+                this.list_money = this.payment;
+                this.$refs['list-text'].textContent = this.list_text;
+                this.$refs['list-money'].textContent = '¥' + parseInt(this.list_money, 10).toLocaleString();
+                let clone = this.$refs['list-item'].cloneNode(true);
+                this.$refs['list'].prepend(clone);
+
+                // 残金額を再計算
+                let amount = parseInt(this.$refs['amount'].textContent.split('¥')[1].replace(/,/g, ''), 10);
+                let payment = parseInt(this.list_money, 10);
+                let balance = amount - payment;
+                this.$refs['amount'].textContent = '¥' + balance.toLocaleString();
+
+                // リセット
+                this.list_text = '';
+                this.list_money = '';
+                this.memo = '';
+                this.payment = '';
+            },
+        }
     });
 </script>
