@@ -50,6 +50,8 @@
                     </p>
                 </div>
                 <ul class="list" ref="list">
+                    @if ($balance->payments->isNotEmpty())
+                    @foreach ($balance->payments as $payment)
                     <li class="list-item">
                         <p class="list-date">2022/09/03</p>
                         <div class="list-flex">
@@ -57,32 +59,12 @@
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
-                            <p class="list-text">献立アプリ</p>
-                            <p class="list-money">¥1,000</p>
+                            <p class="list-text">{{ $payment->memo }}</p>
+                            <p class="list-money">¥{{ $payment->value }}</p>
                         </div>
                     </li>
-                    <li class="list-item">
-                        <p class="list-date">2022/09/03</p>
-                        <div class="list-flex">
-                            <div class="list-checkbox">
-                                <input id="checkbox" class="checkbox" type="checkbox">
-                                <label for="checkbox"></label>
-                            </div>
-                            <p class="list-text">献立アプリ</p>
-                            <p class="list-money">¥1,000</p>
-                        </div>
-                    </li>
-                    <li class="list-item">
-                        <p class="list-date">2022/09/03</p>
-                        <div class="list-flex">
-                            <div class="list-checkbox">
-                                <input id="checkbox" class="checkbox" type="checkbox">
-                                <label for="checkbox"></label>
-                            </div>
-                            <p class="list-text">献立アプリ</p>
-                            <p class="list-money">¥1,000</p>
-                        </div>
-                    </li>
+                    @endforeach
+                    @endif
 
                     <!-- クローン用 -->
                     <li class="list-item" ref="list-item">
