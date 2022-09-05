@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FetchBalanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 // トップページ
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [FetchBalanceController::class, 'init'])->name('home');
