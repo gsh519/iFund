@@ -19,4 +19,31 @@ class Payment extends Model
 {
     protected $table = 'payments';
     protected $primaryKey = 'payment_id';
+
+    /*
+    |-------------------
+    | RELATION
+    |-------------------
+    |
+    */
+
+    /*
+    |-------------------
+    | ACCESSOR
+    |-------------------
+    |
+    */
+
+    // number_format_value
+    public function getNumberFormatValueAttribute(): ?string
+    {
+        return number_format($this->value);
+    }
+
+    /*
+    |-------------------
+    | SCOPE
+    |-------------------
+    |
+    */
 }

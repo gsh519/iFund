@@ -35,7 +35,9 @@ class Balance extends Model
      */
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'balance_id', 'balance_id');
+        return $this->hasMany(Payment::class, 'balance_id', 'balance_id')
+            ->orderBy('payment_date', 'desc')
+            ->orderBy('created_at', 'desc');
     }
 
 
@@ -45,6 +47,12 @@ class Balance extends Model
     |-------------------
     |
     */
+
+    // number_format_current_value
+    public function getNumberFormatCurrentValueAttribute(): ?string
+    {
+        return number_format($this->current_value);
+    }
 
     /*
     |-------------------

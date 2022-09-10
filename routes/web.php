@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CreatePaymentController;
 use App\Http\Controllers\FetchBalanceController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 // トップページ
 Route::get('/', [FetchBalanceController::class, 'init'])->name('home');
+
+// 支出投稿・残金額再計算
+Route::post('/payment/create', [CreatePaymentController::class, 'create'])->name('payment');

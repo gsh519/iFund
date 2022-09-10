@@ -9,6 +9,7 @@
 
     <!-- Fonts -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}">
@@ -38,7 +39,7 @@
             <div class="amount-wrapper">
                 <div class="amount-area">
                     <p>残金額</p>
-                    <h2 class="amount" ref="amount">¥125,329</h2>
+                    <h2 class="amount" ref="amount">¥{{ $balance->number_format_current_value }}</h2>
                 </div>
             </div>
             <!-- リスト -->
@@ -53,14 +54,14 @@
                     @if ($balance->payments->isNotEmpty())
                     @foreach ($balance->payments as $payment)
                     <li class="list-item">
-                        <p class="list-date">2022/09/03</p>
+                        <p class="list-date">{{ date('Y/m/d', strtotime($payment->payment_date)) }}</p>
                         <div class="list-flex">
                             <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
                                 <label for="checkbox"></label>
                             </div>
                             <p class="list-text">{{ $payment->memo }}</p>
-                            <p class="list-money">¥{{ $payment->value }}</p>
+                            <p class="list-money">¥{{ $payment->number_format_value }}</p>
                         </div>
                     </li>
                     @endforeach
@@ -68,7 +69,7 @@
 
                     <!-- クローン用 -->
                     <li class="list-item" ref="list-item">
-                        <p class="list-date">2022/09/03</p>
+                        <p class="list-date" ref="list-date"></p>
                         <div class="list-flex">
                             <div class="list-checkbox">
                                 <input id="checkbox" class="checkbox" type="checkbox">
@@ -125,10 +126,16 @@
             plus_btn_flag: false,
             memo: '',
             payment: '',
+            today: null,
+
+            // 値セット用
+            list_date: '',
             list_text: '',
             list_money: '',
         },
-        mounted() {},
+        mounted() {
+            this.getToday();
+        },
         methods: {
             showCreateInput() {
                 this.plus_btn_flag = true;
@@ -143,9 +150,11 @@
                 // リストに値セット
                 this.list_text = this.memo;
                 this.list_money = this.payment;
+                this.$refs['list-date'].textContent = this.getInputDate();
                 this.$refs['list-text'].textContent = this.list_text;
                 this.$refs['list-money'].textContent = '¥' + parseInt(this.list_money, 10).toLocaleString();
                 let clone = this.$refs['list-item'].cloneNode(true);
+                console.log(clone);
                 this.$refs['list'].prepend(clone);
 
                 // 残金額を再計算
@@ -155,11 +164,41 @@
                 this.$refs['amount'].textContent = '¥' + balance.toLocaleString();
 
                 // リセット
-                this.list_text = '';
-                this.list_money = '';
                 this.memo = '';
                 this.payment = '';
+
+                this.savePayment();
             },
+            savePayment() {
+                axios.post('/payment/create', {
+                    memo: this.list_text,
+                    value: this.list_money,
+                    year: this.getTodayYear(),
+                    month: this.getTodayMonth(),
+                }).then(res => {
+                    this.list_text = '';
+                    this.list_money = '';
+                }).catch(err => {
+                    console.log('error');
+                });
+            },
+            getToday() {
+                let today = new Date();
+                this.today = today;
+            },
+            getTodayYear() {
+                return this.today.getFullYear();
+            },
+            getTodayMonth() {
+                return this.today.getMonth() + 1;
+            },
+            getInputDate() {
+                let year = this.today.getFullYear();
+                let month = this.today.getMonth() + 1;
+                let date = this.today.getDate();
+
+                return year + '/' + month + '/' + date;
+            }
         }
     });
 </script>
