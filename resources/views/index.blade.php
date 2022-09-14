@@ -39,7 +39,7 @@
             <div class="amount-wrapper">
                 <div class="amount-area">
                     <p>残金額</p>
-                    <h2 class="amount" ref="amount">¥{{ $balance->number_format_current_value }}</h2>
+                    <h2 class="amount" ref="amount" v-if="balance">@{{ current_value }}</h2>
                 </div>
             </div>
             <!-- リスト -->
@@ -51,35 +51,20 @@
                     </p>
                 </div>
                 <ul class="list" ref="list">
-                    @if ($balance->payments->isNotEmpty())
-                    @foreach ($balance->payments as $payment)
-                    <li class="list-item">
-                        <p class="list-date">{{ date('Y/m/d', strtotime($payment->payment_date)) }}</p>
-                        <div class="list-flex">
-                            <div class="list-checkbox">
-                                <input id="checkbox" class="checkbox" type="checkbox">
-                                <label for="checkbox"></label>
+                    <!-- 支出リストループ -->
+                    <template v-if="payments.length">
+                        <li v-for="payment in payments" class="list-item">
+                            <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
+                            <div class="list-flex">
+                                <div class="list-checkbox">
+                                    <input id="checkbox" class="checkbox" type="checkbox" v-model="checkedPayments">
+                                    <label for="checkbox"></label>
+                                </div>
+                                <p class="list-text">@{{ payment.memo }}</p>
+                                <p class="list-money">@{{ payment_value(payment.value) }}</p>
                             </div>
-                            <p class="list-text">{{ $payment->memo }}</p>
-                            <p class="list-money">¥{{ $payment->number_format_value }}</p>
-                        </div>
-                    </li>
-                    @endforeach
-                    @endif
-
-                    <!-- クローン用 -->
-                    <li class="list-item" ref="list-item">
-                        <p class="list-date" ref="list-date"></p>
-                        <div class="list-flex">
-                            <div class="list-checkbox">
-                                <input id="checkbox" class="checkbox" type="checkbox">
-                                <label for="checkbox"></label>
-                            </div>
-                            <p class="list-text" ref="list-text"></p>
-                            <p class="list-money" ref="list-money"></p>
-                        </div>
-                    </li>
-
+                        </li>
+                    </template>
                 </ul>
             </div>
 
@@ -120,6 +105,8 @@
 </html>
 
 <script>
+    // 裏側から取得
+    let balance = @json($balance).original;
     const app = new Vue({
         el: '#app',
         data: {
@@ -128,13 +115,20 @@
             payment: '',
             today: null,
 
-            // 値セット用
-            list_date: '',
-            list_text: '',
-            list_money: '',
+            // 初期値
+            balance: null,
+            payments: [],
+
+            checkedPayments: [],
         },
         mounted() {
             this.getToday();
+            this.setBalance();
+        },
+        computed: {
+            current_value() {
+                return this.balance.current_value.toLocaleString();
+            },
         },
         methods: {
             showCreateInput() {
@@ -143,45 +137,68 @@
             close() {
                 this.plus_btn_flag = false;
             },
+
+            /**
+             *  初期値セット
+             */
+            setBalance() {
+                this.balance = balance;
+                this.setPayments();
+            },
+            setPayments() {
+                this.payments = balance.payments;
+            },
+
+            /**
+             * 表示関連
+             */
+            payment_date_format(date) {
+                return date.replace(/-/g, '/'); // ハイフンをスラッシュに変更して表示
+            },
+            payment_value(value) {
+                return value.toLocaleString();
+            },
+
+            /**
+             *  支出保存処理
+             */
             store() {
+                // バリデーション
                 if (this.memo === '' || this.payment === '' || this.payment === '0') {
                     return;
                 }
                 // リストに値セット
-                this.list_text = this.memo;
-                this.list_money = this.payment;
-                this.$refs['list-date'].textContent = this.getInputDate();
-                this.$refs['list-text'].textContent = this.list_text;
-                this.$refs['list-money'].textContent = '¥' + parseInt(this.list_money, 10).toLocaleString();
-                let clone = this.$refs['list-item'].cloneNode(true);
-                console.log(clone);
-                this.$refs['list'].prepend(clone);
+                let payment_obj = {
+                    value: this.payment,
+                    memo: this.memo,
+                    payment_date: this.getInputDate(),
+                };
+                this.payments.unshift(payment_obj);
 
                 // 残金額を再計算
-                let amount = parseInt(this.$refs['amount'].textContent.split('¥')[1].replace(/,/g, ''), 10);
-                let payment = parseInt(this.list_money, 10);
-                let balance = amount - payment;
-                this.$refs['amount'].textContent = '¥' + balance.toLocaleString();
+                this.balance.current_value -= this.payment;
 
                 // リセット
+                let store_payment = this.payment;
+                let store_memo = this.memo;
                 this.memo = '';
                 this.payment = '';
 
-                this.savePayment();
+                this.savePayment(store_payment, store_memo);
             },
-            savePayment() {
+            // データベースに保存
+            savePayment(payment, memo) {
                 axios.post('/payment/create', {
-                    memo: this.list_text,
-                    value: this.list_money,
+                    memo: memo,
+                    value: payment,
                     year: this.getTodayYear(),
                     month: this.getTodayMonth(),
-                }).then(res => {
-                    this.list_text = '';
-                    this.list_money = '';
-                }).catch(err => {
-                    console.log('error');
-                });
+                }).then(res => {}).catch(err => {});
             },
+
+            /**
+             * 日付関連
+             */
             getToday() {
                 let today = new Date();
                 this.today = today;
