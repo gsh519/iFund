@@ -94,10 +94,6 @@ header {
     border-top: 1px solid #ddd;
 }
 
-.list-item:last-child {
-    display: none;
-}
-
 .list-item:first-child {
     border-top: none;
 }

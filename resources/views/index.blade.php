@@ -42,30 +42,35 @@
                     <h2 class="amount" ref="amount" v-if="balance">@{{ current_value }}</h2>
                 </div>
             </div>
-            <!-- リスト -->
             <div class="list-wrapper">
-                <div class="list-header">
-                    <p>
-                        <i class="fas fa-trash-alt"></i>
-                        削除
-                    </p>
-                </div>
-                <ul class="list" ref="list">
-                    <!-- 支出リストループ -->
-                    <template v-if="payments.length">
+                <template v-if="payments.length">
+                    <div class="list-header">
+                        <p @click="deleteCheckedPayments">
+                            <i class="fas fa-trash-alt"></i>
+                            削除
+                        </p>
+                    </div>
+                    <ul class="list" ref="list">
+                        <!-- 支出リストループ -->
+
                         <li v-for="payment in payments" class="list-item">
                             <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
                             <div class="list-flex">
                                 <div class="list-checkbox">
-                                    <input id="checkbox" class="checkbox" type="checkbox" v-model="checkedPayments">
+                                    <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
                                     <label for="checkbox"></label>
                                 </div>
                                 <p class="list-text">@{{ payment.memo }}</p>
                                 <p class="list-money">@{{ payment_value(payment.value) }}</p>
                             </div>
                         </li>
-                    </template>
-                </ul>
+                    </ul>
+                </template>
+                <template v-else>
+                    <div class="list-header" style="text-align: center;">
+                        今月の支出がありません
+                    </div>
+                </template>
             </div>
 
             <div class="plus-btn" @click="showCreateInput">
@@ -105,8 +110,6 @@
 </html>
 
 <script>
-    // 裏側から取得
-    let balance = @json($balance).original;
     const app = new Vue({
         el: '#app',
         data: {
@@ -123,7 +126,7 @@
         },
         mounted() {
             this.getToday();
-            this.setBalance();
+            this.fetchBalance();
         },
         computed: {
             current_value() {
@@ -141,13 +144,6 @@
             /**
              *  初期値セット
              */
-            setBalance() {
-                this.balance = balance;
-                this.setPayments();
-            },
-            setPayments() {
-                this.payments = balance.payments;
-            },
 
             /**
              * 表示関連
@@ -157,6 +153,16 @@
             },
             payment_value(value) {
                 return value.toLocaleString();
+            },
+
+            /**
+             * 残金額・予算の取得
+             */
+            fetchBalance() {
+                axios.get('/balance').then(res => {
+                    this.balance = res.data;
+                    this.payments = res.data.payments;
+                }).catch(err => {});
             },
 
             /**
@@ -193,7 +199,41 @@
                     value: payment,
                     year: this.getTodayYear(),
                     month: this.getTodayMonth(),
-                }).then(res => {}).catch(err => {});
+                }).then(res => {
+                    this.fetchBalance();
+                }).catch(err => {});
+            },
+
+            /**
+             * 支出削除処理
+             */
+            deleteCheckedPayments() {
+                let checked_payment_ids = [];
+
+                this.checkedPayments.forEach((checked_payment) => {
+                    this.payments = this.payments.filter((payment) => {
+                        // idが一致したやつを取り除く
+                        return payment.payment_id !== checked_payment.payment_id;
+                    });
+
+                    checked_payment_ids.push(checked_payment.payment_id);
+                });
+
+                this.recaluculateBalance(this.checkedPayments);
+                this.deletePayments(checked_payment_ids);
+                checked_payment_ids.splice(0);
+                this.checkedPayments.splice(0);
+            },
+            recaluculateBalance(delete_payments) {
+                delete_payments.forEach((payment) => {
+                    this.balance.current_value = Number(this.balance.current_value) + Number(payment.value);
+                });
+            },
+            deletePayments(delete_payments) {
+                axios.post('/payment/delete', {
+                        delete_payments: delete_payments,
+                    })
+                    .then(res => {}).catch(err => {});
             },
 
             /**

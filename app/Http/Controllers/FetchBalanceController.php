@@ -6,11 +6,9 @@ use App\UseCases\FetchBalance;
 
 class FetchBalanceController extends Controller
 {
-    public function init(FetchBalance $FetchBalance)
+    public function get(FetchBalance $FetchBalance)
     {
         $balance = $FetchBalance();
-        return view('index', [
-            'balance' => $balance,
-        ]);
+        return $balance;
     }
 }

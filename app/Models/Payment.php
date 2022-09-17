@@ -27,6 +27,14 @@ class Payment extends Model
     |
     */
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function balance()
+    {
+        return $this->belongsTo(balance::class, 'balance_id', 'balance_id');
+    }
+
     /*
     |-------------------
     | ACCESSOR
