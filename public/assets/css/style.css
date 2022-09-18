@@ -37,10 +37,20 @@ header {
 .swipe-list {
     display: flex;
     align-items: center;
+    overflow-x: scroll;
+    /*IE(Internet Explorer)・Microsoft Edgeへの対応*/
+    -ms-overflow-style: none;
+    /*Firefoxへの対応*/
+    scrollbar-width: none;
+}
+
+.swipe-list::-webkit-scrollbar {
+    display: none;
 }
 
 .swipe-list li {
-    width: calc(100% / 3);
+    width: calc(100% / 3.3);
+    flex-shrink: 0;
     padding: 16px 8px;
     text-align: center;
     font-size: 20px;
