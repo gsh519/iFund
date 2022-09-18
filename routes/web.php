@@ -7,17 +7,6 @@ use App\Http\Controllers\FetchBalanceViewController;
 use App\Http\Controllers\UpdatePaymentController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 // トップページ
 Route::get('/', [FetchBalanceViewController::class, 'init'])->name('home');
 Route::get('/balance', [FetchBalanceController::class, 'get'])->name('balance');
