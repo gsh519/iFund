@@ -39,7 +39,7 @@
             <div class="amount-wrapper">
                 <div class="amount-area">
                     <p>残金額</p>
-                    <h2 class="amount" ref="amount" v-if="balance">@{{ current_value }}</h2>
+                    <h2 class="amount" ref="amount" v-if="balance">¥@{{ current_value }}</h2>
                 </div>
             </div>
             <div class="list-wrapper">
@@ -60,8 +60,10 @@
                                     <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
                                     <label for="checkbox"></label>
                                 </div>
-                                <p class="list-text">@{{ payment.memo }}</p>
-                                <p class="list-money">@{{ payment_value(payment.value) }}</p>
+                                <div class="list-content" @click="updateCheckedPayment(payment)">
+                                    <p class="list-text">@{{ payment.memo }}</p>
+                                    <p class="list-money">¥@{{ payment_value(payment.value) }}</p>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -96,7 +98,7 @@
                         </div>
                     </div>
 
-                    <div class="store-btn" @click="store">
+                    <div class="store-btn" @click="store(payment_id)">
                         <button>
                             保存
                         </button>
@@ -116,6 +118,7 @@
             plus_btn_flag: false,
             memo: '',
             payment: '',
+            payment_id: null,
             today: null,
 
             // 初期値
@@ -166,31 +169,52 @@
             },
 
             /**
-             *  支出保存処理
+             *  支出保存処理 payment_idがある場合は更新　なければ新規作成
              */
-            store() {
+            store(payment_id) {
                 // バリデーション
                 if (this.memo === '' || this.payment === '' || this.payment === '0') {
                     return;
                 }
-                // リストに値セット
-                let payment_obj = {
-                    value: this.payment,
-                    memo: this.memo,
-                    payment_date: this.getInputDate(),
-                };
-                this.payments.unshift(payment_obj);
 
-                // 残金額を再計算
-                this.balance.current_value -= this.payment;
+                // 更新処理
+                if (payment_id) {
+                    // 残金額の再計算
+                    let update_payment_index = this.payments.findIndex(payment => payment.payment_id === payment_id);
+                    this.balance.current_value += this.payments[update_payment_index].value;
 
-                // リセット
-                let store_payment = this.payment;
-                let store_memo = this.memo;
-                this.memo = '';
-                this.payment = '';
+                    // 値の更新
+                    this.payments[update_payment_index].memo = this.memo;
+                    this.payments[update_payment_index].value = this.payment;
+                    this.balance.current_value -= this.payment;
 
-                this.savePayment(store_payment, store_memo);
+                    // リセット
+                    let store_payment = this.payment;
+                    let store_memo = this.memo;
+                    this.memo = '';
+                    this.payment = '';
+
+                    this.updatePayment(store_payment, store_memo);
+                } else { // 新規作成処理
+                    // リストに値セット
+                    let payment_obj = {
+                        value: this.payment,
+                        memo: this.memo,
+                        payment_date: this.getInputDate(),
+                    };
+                    this.payments.unshift(payment_obj);
+
+                    // 残金額を再計算
+                    this.balance.current_value -= this.payment;
+
+                    // リセット
+                    let store_payment = this.payment;
+                    let store_memo = this.memo;
+                    this.memo = '';
+                    this.payment = '';
+
+                    this.savePayment(store_payment, store_memo);
+                }
             },
             // データベースに保存
             savePayment(payment, memo) {
@@ -202,6 +226,29 @@
                 }).then(res => {
                     this.fetchBalance();
                 }).catch(err => {});
+            },
+
+            /**
+             * 支出編集処理
+             */
+            updateCheckedPayment(payment) {
+                console.log(payment);
+                this.plus_btn_flag = true;
+                this.memo = payment.memo;
+                this.payment = payment.value;
+                this.payment_id = payment.payment_id;
+            },
+            updatePayment(payment, memo) {
+                axios.post(`/payment/${this.payment_id}/update`, {
+                        memo: memo,
+                        value: payment,
+                        year: this.getTodayYear(),
+                        month: this.getTodayMonth(),
+                    })
+                    .then(res => {
+                        this.fetchBalance();
+                        this.payment_id = null;
+                    }).catch(err => {});
             },
 
             /**

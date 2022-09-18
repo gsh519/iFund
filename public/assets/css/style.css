@@ -107,7 +107,7 @@ header {
 .list-flex {
     position: relative;
     display: flex;
-    padding: 8px 0;
+    padding: 8px 8px 8px 0;
 }
 
 /* .line {
@@ -120,6 +120,7 @@ header {
 } */
 
 .list-checkbox {
+    width: 10%;
     padding: 12px;
 }
 
@@ -188,7 +189,25 @@ input[type="checkbox"]:checked::after {
     /*チェック後表示*/
 }
 
+.list-content {
+    display: flex;
+    align-items: center;
+    width: 90%;
+}
+
 .list-text {
+    width: 60%;
+}
+
+.list-money {
+    width: 40%;
+    text-align: right;
+    font-size: 28px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* .list-text {
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -209,7 +228,7 @@ input[type="checkbox"]:checked::after {
     font-size: 28px;
     font-weight: bold;
     color: #555;
-}
+} */
 
 /* --------------------------------------- */
 
