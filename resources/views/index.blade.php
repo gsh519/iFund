@@ -8,8 +8,8 @@
     <title>iFund</title>
 
     <!-- Fonts -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}">
@@ -30,50 +30,53 @@
         <div class="wrapper">
             <div class="swipe-wrapper">
                 <ul class="swipe-list">
-                    <li>8月</li>
-                    <li class="active">9月</li>
-                    <li>10月</li>
+                    <li v-for="calendar in calendars" :class="{ 'active' : isThisMonth(calendar) }" @click="fetchBalance(calendar)">@{{ calendar.month }}月</li>
                 </ul>
             </div>
-            <!-- 残金額 -->
-            <div class="amount-wrapper">
-                <div class="amount-area">
-                    <p>残金額</p>
-                    <h2 class="amount" ref="amount" v-if="balance">¥@{{ current_value }}</h2>
+            <template v-if="message">
+                <p style="text-align: center; margin-top: 40px; font-size: 30px;">@{{ message }}</p>
+            </template>
+            <template v-else>
+                <!-- 残金額 -->
+                <div class="amount-wrapper">
+                    <div class="amount-area">
+                        <p>残金額</p>
+                        <h2 class="amount" ref="amount" v-if="balance">¥@{{ current_value }}</h2>
+                    </div>
                 </div>
-            </div>
-            <div class="list-wrapper">
-                <template v-if="payments.length">
-                    <div class="list-header">
-                        <p @click="deleteCheckedPayments">
-                            <i class="fas fa-trash-alt"></i>
-                            削除
-                        </p>
-                    </div>
-                    <ul class="list" ref="list">
-                        <!-- 支出リストループ -->
+                <div class="list-wrapper">
+                    <template v-if="payments.length">
+                        <div class="list-header">
+                            <p @click="deleteCheckedPayments">
+                                <i class="fas fa-trash-alt"></i>
+                                削除
+                            </p>
+                        </div>
+                        <ul class="list" ref="list">
+                            <!-- 支出リストループ -->
 
-                        <li v-for="payment in payments" class="list-item">
-                            <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
-                            <div class="list-flex">
-                                <div class="list-checkbox">
-                                    <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
-                                    <label for="checkbox"></label>
+                            <li v-for="payment in payments" class="list-item">
+                                <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
+                                <div class="list-flex">
+                                    <div class="list-checkbox">
+                                        <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
+                                        <label for="checkbox"></label>
+                                    </div>
+                                    <div class="list-content" @click="updateCheckedPayment(payment)">
+                                        <p class="list-text">@{{ payment.memo }}</p>
+                                        <p class="list-money">¥@{{ payment_value(payment.value) }}</p>
+                                    </div>
                                 </div>
-                                <div class="list-content" @click="updateCheckedPayment(payment)">
-                                    <p class="list-text">@{{ payment.memo }}</p>
-                                    <p class="list-money">¥@{{ payment_value(payment.value) }}</p>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </template>
-                <template v-else>
-                    <div class="list-header" style="text-align: center;">
-                        今月の支出がありません
-                    </div>
-                </template>
-            </div>
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-else>
+                        <div class="list-header" style="text-align: center;">
+                            今月の支出がありません
+                        </div>
+                    </template>
+                </div>
+            </template>
 
             <div class="plus-btn" @click="showCreateInput">
                 <i class="fas fa-plus"></i>
@@ -116,10 +119,60 @@
         el: '#app',
         data: {
             plus_btn_flag: false,
+            message: null,
             memo: '',
             payment: '',
             payment_id: null,
             today: null,
+            calendars: [{
+                    year: 2022,
+                    month: 1,
+                },
+                {
+                    year: 2022,
+                    month: 2,
+                },
+                {
+                    year: 2022,
+                    month: 3,
+                },
+                {
+                    year: 2022,
+                    month: 4,
+                },
+                {
+                    year: 2022,
+                    month: 5,
+                },
+                {
+                    year: 2022,
+                    month: 6,
+                },
+                {
+                    year: 2022,
+                    month: 7,
+                },
+                {
+                    year: 2022,
+                    month: 8,
+                },
+                {
+                    year: 2022,
+                    month: 9,
+                },
+                {
+                    year: 2022,
+                    month: 10,
+                },
+                {
+                    year: 2022,
+                    month: 11,
+                },
+                {
+                    year: 2022,
+                    month: 12,
+                },
+            ],
 
             // 初期値
             balance: null,
@@ -161,8 +214,19 @@
             /**
              * 残金額・予算の取得
              */
-            fetchBalance() {
-                axios.get('/balance').then(res => {
+            fetchBalance(calendar = null) {
+                let year = (calendar === null) ? this.today.getFullYear() : calendar.year;
+                let month = (calendar === null) ? this.today.getMonth() + 1 : calendar.month;
+
+                axios.get('/balance', {
+                    params: {
+                        year: year,
+                        month: month,
+                    }
+                }).then(res => {
+                    if (Object.keys(res.data).length === 0) {
+                        this.message = 'データがありません';
+                    }
                     this.balance = res.data;
                     this.payments = res.data.payments;
                 }).catch(err => {});
@@ -185,7 +249,7 @@
 
                     // 値の更新
                     this.payments[update_payment_index].memo = this.memo;
-                    this.payments[update_payment_index].value = this.payment;
+                    this.payments[update_payment_index].value = Number(this.payment);
                     this.balance.current_value -= this.payment;
 
                     // リセット
@@ -198,7 +262,7 @@
                 } else { // 新規作成処理
                     // リストに値セット
                     let payment_obj = {
-                        value: this.payment,
+                        value: Number(this.payment),
                         memo: this.memo,
                         payment_date: this.getInputDate(),
                     };
@@ -302,7 +366,13 @@
                 let date = this.today.getDate();
 
                 return year + '/' + month + '/' + date;
-            }
+            },
+            isThisMonth(calendar = null) {
+                if (calendar && this.today) {
+                    return calendar.month === this.today.getMonth() + 1;
+                }
+                return false;
+            },
         }
     });
 </script>
