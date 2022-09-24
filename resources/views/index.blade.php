@@ -89,7 +89,7 @@
                     </template>
                     <template v-else>
                         <div class="list-header" style="text-align: center;">
-                            今月の支出がありません
+                            @{{ this.show_date.getMonth() + 1 }}月の支出がありません
                         </div>
                     </template>
                 </div>
@@ -104,6 +104,12 @@
                     <div class="input-head">
                         <p class="info">支出の入力</p>
                         <div class="xmark" @click="close"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="payment">
+                        <p>日付</p>
+                        <div class="payment-input">
+                            <input type="date" v-model="payment_date" required>
+                        </div>
                     </div>
                     <div class="payment">
                         <p class="payment-text">メモ</p>
@@ -139,6 +145,7 @@
             message: null,
             memo: '',
             payment: '',
+            payment_date: null,
             payment_id: null,
             today: null,
             show_date: new Date(),
@@ -206,6 +213,7 @@
                     }
                     this.balance = res.data;
                     this.payments = res.data.payments;
+                    console.log(this.payments);
                 }).catch(err => {});
             },
 
@@ -214,7 +222,12 @@
              */
             store(payment_id) {
                 // バリデーション
-                if (this.memo === '' || this.payment === '' || this.payment === '0') {
+                if (
+                    this.memo === '' ||
+                    this.payment === '' ||
+                    this.payment === '0' ||
+                    this.payment_date === null
+                ) {
                     return;
                 }
 
@@ -227,21 +240,24 @@
                     // 値の更新
                     this.payments[update_payment_index].memo = this.memo;
                     this.payments[update_payment_index].value = Number(this.payment);
+                    this.payments[update_payment_index].payment_date = this.payment_date;
                     this.balance.current_value -= this.payment;
 
                     // リセット
                     let store_payment = this.payment;
                     let store_memo = this.memo;
+                    let store_payment_date = this.payment_date;
                     this.memo = '';
                     this.payment = '';
+                    this.payment_date = null;
 
-                    this.updatePayment(store_payment, store_memo);
+                    this.updatePayment(store_payment, store_memo, store_payment_date);
                 } else { // 新規作成処理
                     // リストに値セット
                     let payment_obj = {
                         value: Number(this.payment),
                         memo: this.memo,
-                        payment_date: this.getInputDate(),
+                        payment_date: this.payment_date,
                     };
                     this.payments.unshift(payment_obj);
 
@@ -251,17 +267,20 @@
                     // リセット
                     let store_payment = this.payment;
                     let store_memo = this.memo;
+                    let store_payment_date = this.payment_date;
                     this.memo = '';
                     this.payment = '';
+                    this.payment_date = null;
 
-                    this.savePayment(store_payment, store_memo);
+                    this.savePayment(store_payment, store_memo, store_payment_date);
                 }
             },
             // データベースに保存
-            savePayment(payment, memo) {
+            savePayment(payment, memo, payment_date) {
                 axios.post('/payment/create', {
                     memo: memo,
                     value: payment,
+                    payment_date: payment_date,
                     year: this.getTodayYear(),
                     month: this.getTodayMonth(),
                 }).then(res => {
@@ -277,12 +296,16 @@
                 this.plus_btn_flag = true;
                 this.memo = payment.memo;
                 this.payment = payment.value;
+                this.payment_date = payment.payment_date;
                 this.payment_id = payment.payment_id;
             },
-            updatePayment(payment, memo) {
+            updatePayment(payment, memo, payment_date) {
+                console.log(payment_date);
                 axios.post(`/payment/${this.payment_id}/update`, {
+
                         memo: memo,
                         value: payment,
+                        payment_date: payment_date,
                         year: this.getTodayYear(),
                         month: this.getTodayMonth(),
                     })

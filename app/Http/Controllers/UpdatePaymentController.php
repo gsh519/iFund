@@ -20,11 +20,10 @@ class UpdatePaymentController extends Controller
         $current_balance->current_value += $payment->value;
         $current_balance->save();
 
-        $today = Carbon::today();
         $payment->balance_id = $current_balance->balance_id;
-        $payment->payment_date = $today;
         $payment->memo = $request->memo;
         $payment->value = $request->value;
+        $payment->payment_date = $request->payment_date;
         $payment->save();
 
         // 再計算して更新
