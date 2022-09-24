@@ -32,13 +32,19 @@
             </h1>
         </header>
         <div class="wrapper">
-            <div class="swipe-wrapper">
+
+            <div class="date-wrapper">
+                <div class="date-previous"><i class="fas fa-angle-left"></i></div>
+                <div class="date-content">2022年 9月</div>
+                <div class="date-next"><i class="fas fa-angle-right"></i></div>
+            </div>
+            <!-- <div class="swipe-wrapper">
                 <ul class="swipe-list">
                     <li v-for="calendar in calendars" :class="{ 'active' : isThisMonth(calendar) }" @click="fetchBalance(calendar)">@{{ calendar.month }}月</li>
                 </ul>
-            </div>
+            </div> -->
 
-            <div style="text-align: right; padding: 16px 24px 0">
+            <div style="text-align: right; padding: 0 24px">
                 <a href="{{ route('balance.create') }}" style="font-weight: bold; color: var(--main-color);">予算設定</a>
             </div>
 

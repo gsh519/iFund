@@ -43,6 +43,36 @@ header {
 
 /* --------------------------------------- */
 
+.date-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+}
+
+.date-previous, .date-next {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2rem;
+    height: 2rem;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid var(--main-color);
+    font-size: 28px;
+    color: var(--main-color);
+}
+
+.date-content {
+    margin: 0 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+}
+
+
+/* --------------------------------------- */
+
 .swipe-wrapper {
     background-color: #fff;
     box-shadow: 1px 1px 1px 1px #ccc;
