@@ -25,7 +25,11 @@
 <body>
     <div id="app">
         <header>
-            <h1>iFund</h1>
+            <h1>
+                <a href="{{ route('home') }}" style="width: 100%; display: block; color: #fff;">
+                    iFund
+                </a>
+            </h1>
         </header>
         <div class="wrapper">
             <div class="swipe-wrapper">
@@ -33,6 +37,11 @@
                     <li v-for="calendar in calendars" :class="{ 'active' : isThisMonth(calendar) }" @click="fetchBalance(calendar)">@{{ calendar.month }}月</li>
                 </ul>
             </div>
+
+            <div style="text-align: right; padding: 16px 24px 0">
+                <a href="{{ route('balance.create') }}" style="font-weight: bold; color: var(--main-color);">予算設定</a>
+            </div>
+
             <template v-if="message">
                 <p style="text-align: center; margin-top: 40px; font-size: 30px;">@{{ message }}</p>
             </template>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CreateBalanceController;
 use App\Http\Controllers\CreatePaymentController;
 use App\Http\Controllers\DeletePaymentController;
 use App\Http\Controllers\FetchBalanceController;
@@ -19,3 +20,9 @@ Route::post('/payment/{payment}/update', [UpdatePaymentController::class, 'updat
 
 // 支出削除処理・残金額再計算
 Route::post('/payment/delete', [DeletePaymentController::class, 'delete'])->name('payment.delete');
+
+/**
+ * 残金額設定ページ
+ */
+Route::get('/balance/create', [CreateBalanceController::class, 'init'])->name('balance.create');
+Route::post('/balance/create', [CreateBalanceController::class, 'create']);

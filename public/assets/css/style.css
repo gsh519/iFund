@@ -4,6 +4,10 @@
     --main-color: rgba(43, 174, 0, 0.749);
 }
 
+/* ------------------
+共通css
+--------------------- */
+
 /* 候補カラー */
 /* #7cae6cbf */
 
@@ -25,6 +29,16 @@ header {
     background-color: var(--main-color);
     text-align: center;
     color: #fff;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 6px 10px;
+    background-color: #fff;
+    border-radius: 16px;
+    color: #888;
+    border: 1px solid #888;
+    font-weight: bold;
 }
 
 /* --------------------------------------- */
@@ -63,7 +77,7 @@ header {
 /* --------------------------------------- */
 
 .amount-wrapper {
-    padding: 30px 24px 0;
+    padding: 18px 24px 0;
 }
 
 .amount-area {
@@ -314,6 +328,10 @@ input[type="checkbox"]:checked::after {
 }
 
 .store-btn {
+    text-align: right;
+}
+
+.button-area {
     text-align: right;
 }
 
