@@ -34,9 +34,11 @@
         <div class="wrapper">
 
             <div class="date-wrapper">
-                <div class="date-previous"><i class="fas fa-angle-left"></i></div>
-                <div class="date-content">2022年 9月</div>
-                <div class="date-next"><i class="fas fa-angle-right"></i></div>
+                <div @click="fetchBalance(show_date.getFullYear(), show_date.getMonth() - 1)" class="date-previous">
+                    <i class="fas fa-angle-left"></i>
+                </div>
+                <div class="date-content">@{{ date_display }}</div>
+                <div @click="fetchBalance(show_date.getFullYear(), show_date.getMonth() + 1)" class="date-next"><i class="fas fa-angle-right"></i></div>
             </div>
             <!-- <div class="swipe-wrapper">
                 <ul class="swipe-list">
@@ -139,55 +141,7 @@
             payment: '',
             payment_id: null,
             today: null,
-            calendars: [{
-                    year: 2022,
-                    month: 1,
-                },
-                {
-                    year: 2022,
-                    month: 2,
-                },
-                {
-                    year: 2022,
-                    month: 3,
-                },
-                {
-                    year: 2022,
-                    month: 4,
-                },
-                {
-                    year: 2022,
-                    month: 5,
-                },
-                {
-                    year: 2022,
-                    month: 6,
-                },
-                {
-                    year: 2022,
-                    month: 7,
-                },
-                {
-                    year: 2022,
-                    month: 8,
-                },
-                {
-                    year: 2022,
-                    month: 9,
-                },
-                {
-                    year: 2022,
-                    month: 10,
-                },
-                {
-                    year: 2022,
-                    month: 11,
-                },
-                {
-                    year: 2022,
-                    month: 12,
-                },
-            ],
+            show_date: new Date(),
 
             // 初期値
             balance: null,
@@ -202,6 +156,9 @@
         computed: {
             current_value() {
                 return this.balance.current_value.toLocaleString();
+            },
+            date_display() {
+                return `${this.show_date.getFullYear()}年${this.show_date.getMonth() + 1}月`;
             },
         },
         methods: {
@@ -229,9 +186,10 @@
             /**
              * 残金額・予算の取得
              */
-            fetchBalance(calendar = null) {
-                let year = (calendar === null) ? this.today.getFullYear() : calendar.year;
-                let month = (calendar === null) ? this.today.getMonth() + 1 : calendar.month;
+            fetchBalance(payload_year = null, payload_month = null) {
+                // 日付を渡したい
+                let year = (payload_year === null) ? this.today.getFullYear() : payload_year;
+                let month = (payload_month === null) ? this.today.getMonth() + 1 : payload_month + 1;
 
                 axios.get('/balance', {
                     params: {
@@ -241,6 +199,10 @@
                 }).then(res => {
                     if (Object.keys(res.data).length === 0) {
                         this.message = 'データがありません';
+                        this.show_date = new Date(payload_year, payload_month);
+                    } else {
+                        this.message = null;
+                        this.show_date = new Date(res.data.balance_year, res.data.balance_month - 1);
                     }
                     this.balance = res.data;
                     this.payments = res.data.payments;
@@ -381,12 +343,6 @@
                 let date = this.today.getDate();
 
                 return year + '/' + month + '/' + date;
-            },
-            isThisMonth(calendar = null) {
-                if (calendar && this.today) {
-                    return calendar.month === this.today.getMonth() + 1;
-                }
-                return false;
             },
         }
     });
