@@ -106,7 +106,7 @@
                         <div class="xmark" @click="close"><i class="fas fa-times"></i></div>
                     </div>
                     <div class="payment">
-                        <p>日付</p>
+                        <p class="payment-text">日付</p>
                         <div class="payment-input">
                             <input type="date" v-model="payment_date" required>
                         </div>
@@ -141,19 +141,21 @@
     const app = new Vue({
         el: '#app',
         data: {
+            // 初期値
+            balance: null,
+            payments: [],
             plus_btn_flag: false,
             message: null,
-            memo: '',
-            payment: '',
-            payment_date: null,
             payment_id: null,
             today: null,
             show_date: new Date(),
 
-            // 初期値
-            balance: null,
-            payments: [],
+            // 送信用値セット
+            memo: '',
+            payment: '',
+            payment_date: null,
 
+            // 削除対象支出
             checkedPayments: [],
         },
         mounted() {
@@ -170,9 +172,13 @@
         },
         methods: {
             showCreateInput() {
+                this.payment_date = this.getInputDate();
                 this.plus_btn_flag = true;
             },
             close() {
+                this.memo = '';
+                this.payment = '';
+                this.payment_date = null;
                 this.plus_btn_flag = false;
             },
 
@@ -213,7 +219,6 @@
                     }
                     this.balance = res.data;
                     this.payments = res.data.payments;
-                    console.log(this.payments);
                 }).catch(err => {});
             },
 
@@ -292,7 +297,6 @@
              * 支出編集処理
              */
             updateCheckedPayment(payment) {
-                console.log(payment);
                 this.plus_btn_flag = true;
                 this.memo = payment.memo;
                 this.payment = payment.value;
@@ -300,7 +304,6 @@
                 this.payment_id = payment.payment_id;
             },
             updatePayment(payment, memo, payment_date) {
-                console.log(payment_date);
                 axios.post(`/payment/${this.payment_id}/update`, {
 
                         memo: memo,
@@ -323,7 +326,7 @@
 
                 this.checkedPayments.forEach((checked_payment) => {
                     this.payments = this.payments.filter((payment) => {
-                        // idが一致したやつを取り除く
+                        // idが一致しなかったやつが削除対象
                         return payment.payment_id !== checked_payment.payment_id;
                     });
 
@@ -361,11 +364,11 @@
                 return this.today.getMonth() + 1;
             },
             getInputDate() {
-                let year = this.today.getFullYear();
-                let month = this.today.getMonth() + 1;
-                let date = this.today.getDate();
-
-                return year + '/' + month + '/' + date;
+                let dt = new Date();
+                let y = dt.getFullYear();
+                let m = ('00' + (dt.getMonth() + 1)).slice(-2);
+                let d = ('00' + dt.getDate()).slice(-2)
+                return y + '-' + m + '-' + d;
             },
         }
     });
