@@ -41,6 +41,9 @@ class CreateBalanceController extends Controller
 
     public function create(Request $request, UpdateBalance $UpdateBalance)
     {
+        $request->validate([
+            'balance_value' => ['required', 'integer'],
+        ]);
         // 残金額の更新or新規作成
         $updated_balance = $UpdateBalance($request);
 

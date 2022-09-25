@@ -44,6 +44,13 @@
                     @csrf
                     <input type="hidden" name="year" value="{{ $today_year }}">
                     <input type="hidden" name="month" value="{{ $next_month }}">
+                    @if ($errors->any())
+                    <div>
+                        @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                        @endforeach
+                    </div>
+                    @endif
                     <div class="amount-area">
                         <label>残金額</label>
                         <input type="number" name="balance_value" value="{{ $balance->current_value }}">
