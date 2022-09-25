@@ -212,7 +212,7 @@
                 }).then(res => {
                     if (Object.keys(res.data).length === 0) {
                         this.message = 'データがありません';
-                        this.show_date = new Date(payload_year, payload_month);
+                        this.show_date = new Date(payload_year ?? this.today.getFullYear(), payload_month ?? this.today.getMonth());
                     } else {
                         this.message = null;
                         this.show_date = new Date(res.data.balance_year, res.data.balance_month - 1);
