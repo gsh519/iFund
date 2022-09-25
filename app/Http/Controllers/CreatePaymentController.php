@@ -21,7 +21,6 @@ class CreatePaymentController extends Controller
 
         DB::beginTransaction();
 
-        $today = Carbon::today();
         $payment = new Payment();
         $payment->balance_id = $current_balance->balance_id;
         $payment->payment_date = $request->payment_date;

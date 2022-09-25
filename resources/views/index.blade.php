@@ -286,8 +286,11 @@
                     memo: memo,
                     value: payment,
                     payment_date: payment_date,
-                    year: this.getTodayYear(),
-                    month: this.getTodayMonth(),
+                    // payment_dateのyearとmonthにする必要がある
+                    year: payment_date.getFullYear(),
+                    month: payment_date.getMonth() + 1,
+                    // year: this.getTodayYear(),
+                    // month: this.getTodayMonth(),
                 }).then(res => {
                     this.fetchBalance();
                 }).catch(err => {});
