@@ -108,7 +108,7 @@
                     <div class="payment">
                         <p class="payment-text">日付</p>
                         <div class="payment-input">
-                            <input type="date" v-model="payment_date" required>
+                            <input type="date" v-model="payment_date" required class="date">
                         </div>
                     </div>
                     <div class="payment">

@@ -380,6 +380,10 @@ input[type="checkbox"]:checked::after {
     color: #666;
 }
 
+.payment-input > input.date {
+    text-align: center;
+}
+
 .store-btn {
     text-align: right;
 }
