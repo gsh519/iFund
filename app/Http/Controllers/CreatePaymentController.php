@@ -12,11 +12,12 @@ class CreatePaymentController extends Controller
 {
     public function create(Request $request)
     {
+        $date = Carbon::parse($request->payment_date);
         // paymentを追加
         // balanceに再計算して更新
         $current_balance = Balance::query()
-            ->where('balance_year', $request->year)
-            ->where('balance_month', $request->month)
+            ->where('balance_year', $date->year)
+            ->where('balance_month', $date->month)
             ->first();
 
         DB::beginTransaction();
@@ -34,5 +35,7 @@ class CreatePaymentController extends Controller
         $current_balance->save();
 
         DB::commit();
+
+        return $current_balance->load('payments');
     }
 }

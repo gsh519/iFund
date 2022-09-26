@@ -32,5 +32,7 @@ class UpdatePaymentController extends Controller
         $current_balance->save();
 
         DB::commit();
+
+        return $current_balance->load('payments');
     }
 }

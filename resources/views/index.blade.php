@@ -282,17 +282,13 @@
             },
             // データベースに保存
             savePayment(payment, memo, payment_date) {
+                console.log(payment_date);
                 axios.post('/payment/create', {
                     memo: memo,
                     value: payment,
                     payment_date: payment_date,
-                    // payment_dateのyearとmonthにする必要がある
-                    year: payment_date.getFullYear(),
-                    month: payment_date.getMonth() + 1,
-                    // year: this.getTodayYear(),
-                    // month: this.getTodayMonth(),
                 }).then(res => {
-                    this.fetchBalance();
+                    this.fetchBalance(res.data.balance_year, res.data.balance_month - 1);
                 }).catch(err => {});
             },
 
@@ -308,15 +304,12 @@
             },
             updatePayment(payment, memo, payment_date) {
                 axios.post(`/payment/${this.payment_id}/update`, {
-
                         memo: memo,
                         value: payment,
                         payment_date: payment_date,
-                        year: this.getTodayYear(),
-                        month: this.getTodayMonth(),
                     })
                     .then(res => {
-                        this.fetchBalance();
+                        this.fetchBalance(res.data.balance_year, res.data.balance_month - 1);
                         this.payment_id = null;
                     }).catch(err => {});
             },
