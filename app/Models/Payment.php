@@ -32,7 +32,7 @@ class Payment extends Model
      */
     public function balance()
     {
-        return $this->belongsTo(balance::class, 'balance_id', 'balance_id');
+        return $this->belongsTo(Balance::class, 'balance_id', 'balance_id');
     }
 
     /*
