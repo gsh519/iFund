@@ -279,6 +279,7 @@
 
                     this.savePayment(store_payment, store_memo, store_payment_date);
                 }
+                this.plus_btn_flag = false;
             },
             // データベースに保存
             savePayment(payment, memo, payment_date) {
