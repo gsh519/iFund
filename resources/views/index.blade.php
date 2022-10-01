@@ -45,49 +45,58 @@
                 <a href="{{ route('balance.list') }}" style="font-weight: bold; color: var(--main-color);">予算設定</a>
             </div>
 
-            <template v-if="message">
-                <p style="text-align: center; margin-top: 40px; font-size: 30px;">@{{ message }}</p>
+            <template v-if="loading">
+                <div class="loader-wrap">
+                    <div class="loader">Loading...</div>
+                </div>
             </template>
-            <template v-else>
-                <!-- 残金額 -->
-                <div class="amount-wrapper">
-                    <div class="amount-area">
-                        <p>残金額</p>
-                        <h2 class="amount" ref="amount" v-if="balance">¥@{{ current_value }}</h2>
-                    </div>
-                </div>
-                <div class="list-wrapper">
-                    <template v-if="payments.length">
-                        <div class="list-header">
-                            <p @click="deleteCheckedPayments">
-                                <i class="fas fa-trash-alt"></i>
-                                削除
-                            </p>
-                        </div>
-                        <ul class="list" ref="list">
-                            <!-- 支出リストループ -->
 
-                            <li v-for="payment in payments" class="list-item">
-                                <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
-                                <div class="list-flex">
-                                    <div class="list-checkbox">
-                                        <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
-                                        <label for="checkbox"></label>
-                                    </div>
-                                    <div class="list-content" @click="updateCheckedPayment(payment)">
-                                        <p class="list-text">@{{ payment.memo }}</p>
-                                        <p class="list-money">¥@{{ payment_value(payment.value) }}</p>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </template>
-                    <template v-else>
-                        <div class="list-header" style="text-align: center;">
-                            @{{ this.show_date.getMonth() + 1 }}月の支出がありません
+            <template v-else>
+                <template v-if="message">
+                    <p style="text-align: center; margin-top: 40px; font-size: 30px;">@{{ message }}</p>
+                </template>
+                <template v-else>
+
+                    <!-- 残金額 -->
+                    <div class="amount-wrapper">
+                        <div class="amount-area">
+                            <p>残金額</p>
+                            <h2 class="amount" ref="amount" v-if="balance">¥@{{ current_value }}</h2>
                         </div>
-                    </template>
-                </div>
+                    </div>
+                    <div class="list-wrapper">
+                        <template v-if="payments.length">
+                            <div class="list-header">
+                                <p @click="deleteCheckedPayments">
+                                    <i class="fas fa-trash-alt"></i>
+                                    削除
+                                </p>
+                            </div>
+                            <ul class="list" ref="list">
+                                <!-- 支出リストループ -->
+
+                                <li v-for="payment in payments" class="list-item">
+                                    <p class="list-date">@{{ payment_date_format(payment.payment_date) }}</p>
+                                    <div class="list-flex">
+                                        <div class="list-checkbox">
+                                            <input class="checkbox" type="checkbox" :value="payment" v-model="checkedPayments">
+                                            <label for="checkbox"></label>
+                                        </div>
+                                        <div class="list-content" @click="updateCheckedPayment(payment)">
+                                            <p class="list-text">@{{ payment.memo }}</p>
+                                            <p class="list-money">¥@{{ payment_value(payment.value) }}</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </template>
+                        <template v-else>
+                            <div class="list-header" style="text-align: center;">
+                                @{{ this.show_date.getMonth() + 1 }}月の支出がありません
+                            </div>
+                        </template>
+                    </div>
+                </template>
             </template>
 
             <div class="plus-btn" @click="showCreateInput">
@@ -137,6 +146,7 @@
         el: '#app',
         data: {
             // 初期値
+            loading: 0,
             balance: null,
             payments: [],
             plus_btn_flag: false,
@@ -195,6 +205,8 @@
              * 残金額・予算の取得
              */
             fetchBalance(payload_year = null, payload_month = null) {
+                this.loading++;
+                console.log(this.loading);
                 // 日付を渡したい
                 let year = (payload_year === null) ? this.today.getFullYear() : payload_year;
                 let month = (payload_month === null) ? this.today.getMonth() + 1 : payload_month + 1;
@@ -214,6 +226,7 @@
                     }
                     this.balance = res.data;
                     this.payments = res.data.payments;
+                    this.loading--;
                 }).catch(err => {});
             },
 
