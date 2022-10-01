@@ -17,7 +17,6 @@ class CreateBalanceController extends Controller
      */
     public function init(Request $request): View
     {
-        dd($request->balance_year, $request->balance_month);
         // 年・月が一致するやつがすでに存在していたらそれを表示
         $balance = Balance::query()
             ->where('balance_year', $request->balance_year)

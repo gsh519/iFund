@@ -53,7 +53,7 @@
                     @endif
                     <div class="amount-area">
                         <label>残金額</label>
-                        <input type="number" name="balance_value" value="{{ $balance->current_value }}">
+                        <input type="number" name="balance_value" value="{{ $balance->current_value ?? 0 }}">
                     </div>
                     <div class="button-area" style="margin-top: 16px;">
                         <button type="submit">

@@ -40,42 +40,46 @@
             </div>
 
             <div class="date-wrapper" style="padding: 0 0 10px 0;">
-                <div @click="fetchBalance(show_date.getFullYear(), show_date.getMonth() - 1)" class="date-previous">
-                    <i class="fas fa-angle-left"></i>
+                <div class="date-previous">
+                    <a style="display: flex; width: 100%; justify-content: center; color: var(--main-color);" href="{{ route('balance.list', ['balance_year' => $balance_year - 1])}}">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
                 </div>
                 <div class="date-content">{{ $balance_year }}年</div>
-                <div @click="fetchBalance(show_date.getFullYear(), show_date.getMonth() + 1)" class="date-next"><i class="fas fa-angle-right"></i></div>
+                <div class="date-next">
+                    <a style="display: flex; width: 100%; justify-content: center; color: var(--main-color);" href="{{ route('balance.list', ['balance_year' => $balance_year + 1])}}">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </div>
             </div>
 
             <div class="list-wrapper">
 
+                @if (!empty($calendars))
                 <ul class="list">
-
-                    <template v-for="calendar in calendars">
-                        <li class="list-item" :class='{ "active": todayMonth === calendar }'>
-                            <a href="{{ route('balance.create') }}" style="display:block; padding: 20px;">
-                                <div>
-                                    <p style="font-size: 28px; font-weight: bold; color: #555; text-align: center;">@{{ calendar }}月</p>
-                                </div>
-                            </a>
-                        </li>
-                    </template>
-                </ul>
-
-                <!-- @if ($balances->isNotEmpty()) -->
-                <!-- <ul class="list"> -->
-                <!-- 支出リストループ -->
-                <!-- @foreach ($balances as $balance) -->
-                <!-- <li class="list-item">
-                        <a href="{{ route('balance.create', ['balance_year' => $balance->balance_year, 'balance_month' => $balance->balance_month]) }}" style="display:block; padding: 20px;">
+                    <!-- 支出リストループ -->
+                    @foreach ($calendars as $calendar)
+                    @if (($calendar == $today_month) && ($today_year == $balance_year))
+                    <li class="list-item active">
+                        <a href="{{ route('balance.create', ['balance_year' => $balance_year, 'balance_month' => $calendar]) }}" style="display:block; padding: 20px;">
                             <div>
-                                <p style="font-size: 28px; font-weight: bold; color: #555; text-align: center;">{{ $balance->balance_month }}月</p>
+                                <p style="font-size: 28px; font-weight: bold; color: #555; text-align: center;">{{ $calendar }}月</p>
                             </div>
                         </a>
-                    </li> -->
-                <!-- @endforeach -->
-                <!-- </ul> -->
-                <!-- @endif -->
+                    </li>
+                    @else
+                    <li class="list-item">
+                        <a href="{{ route('balance.create', ['balance_year' => $balance_year, 'balance_month' => $calendar]) }}" style="display:block; padding: 20px;">
+                            <div>
+                                <p style="font-size: 28px; font-weight: bold; color: #555; text-align: center;">{{ $calendar }}月</p>
+                            </div>
+                        </a>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @endif
+
             </div>
 
         </div>
@@ -87,20 +91,7 @@
 <script>
     const app = new Vue({
         el: '#app',
-        data: {
-            calendars: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            today: null,
-            todayMonth: null,
-        },
-        mounted() {
-            this.getToday();
-        },
-        methods: {
-            getToday() {
-                let today = new Date();
-                this.today = today;
-                this.todayMonth = today.getMonth() + 1;
-            }
-        }
+        data: {},
+        methods: {}
     });
 </script>
