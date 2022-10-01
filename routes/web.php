@@ -4,6 +4,7 @@ use App\Http\Controllers\CreateBalanceController;
 use App\Http\Controllers\CreatePaymentController;
 use App\Http\Controllers\DeletePaymentController;
 use App\Http\Controllers\FetchBalanceController;
+use App\Http\Controllers\FetchBalanceListController;
 use App\Http\Controllers\FetchBalanceViewController;
 use App\Http\Controllers\UpdatePaymentController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,6 @@ Route::post('/payment/delete', [DeletePaymentController::class, 'delete'])->name
 /**
  * 残金額設定ページ
  */
+Route::get('/balance/list', [FetchBalanceListController::class, 'init'])->name('balance.list');
 Route::get('/balance/create', [CreateBalanceController::class, 'init'])->name('balance.create');
 Route::post('/balance/create', [CreateBalanceController::class, 'create']);

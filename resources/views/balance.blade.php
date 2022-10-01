@@ -34,16 +34,16 @@
         <div class="wrapper">
 
             <div style="text-align: left; padding: 16px 24px 0">
-                <a class="back-btn" href="{{ route('home') }}">戻る</a>
+                <a class="back-btn" href="{{ route('balance.list') }}">戻る</a>
             </div>
 
             <!-- 残金額 -->
             <div class="amount-wrapper">
-                <h2 style="text-align: center; margin-bottom: 20px;">{{ $today_year }}年{{ $next_month }}月</h2>
+                <h2 style="text-align: center; margin-bottom: 20px;">{{ $balance_year }}年{{ $balance_month }}月</h2>
                 <form action="{{ route('balance.create') }}" method="post">
                     @csrf
-                    <input type="hidden" name="year" value="{{ $today_year }}">
-                    <input type="hidden" name="month" value="{{ $next_month }}">
+                    <input type="hidden" name="year" value="{{ $balance_year }}">
+                    <input type="hidden" name="month" value="{{ $balance_month }}">
                     @if ($errors->any())
                     <div>
                         @foreach ($errors->all() as $error)

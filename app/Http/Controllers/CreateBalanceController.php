@@ -15,16 +15,13 @@ class CreateBalanceController extends Controller
      *
      * @return View
      */
-    public function init(): View
+    public function init(Request $request): View
     {
-        $today = Carbon::today();
-        $today_year = $today->year;
-        $next_month = $today->copy()->addMonth()->month;
-
+        dd($request->balance_year, $request->balance_month);
         // 年・月が一致するやつがすでに存在していたらそれを表示
         $balance = Balance::query()
-            ->where('balance_year', $today_year)
-            ->where('balance_month', $next_month)
+            ->where('balance_year', $request->balance_year)
+            ->where('balance_month', $request->balance_month)
             ->first();
 
         // なければ空で表示
@@ -33,8 +30,8 @@ class CreateBalanceController extends Controller
         }
 
         return view('balance', [
-            'today_year' => $today_year,
-            'next_month' => $next_month,
+            'balance_year' => $request->balance_year,
+            'balance_month' => $request->balance_month,
             'balance' => $balance,
         ]);
     }

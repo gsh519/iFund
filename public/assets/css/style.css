@@ -169,6 +169,10 @@ button {
     border-top: 1px solid #ddd;
 }
 
+.list-item.active {
+    background-color: rgb(182 241 163 / 75%);
+}
+
 .list-item:first-child {
     border-top: none;
 }

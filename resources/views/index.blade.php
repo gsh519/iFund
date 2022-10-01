@@ -40,14 +40,9 @@
                 <div class="date-content">@{{ date_display }}</div>
                 <div @click="fetchBalance(show_date.getFullYear(), show_date.getMonth() + 1)" class="date-next"><i class="fas fa-angle-right"></i></div>
             </div>
-            <!-- <div class="swipe-wrapper">
-                <ul class="swipe-list">
-                    <li v-for="calendar in calendars" :class="{ 'active' : isThisMonth(calendar) }" @click="fetchBalance(calendar)">@{{ calendar.month }}月</li>
-                </ul>
-            </div> -->
 
             <div style="text-align: right; padding: 0 24px">
-                <a href="{{ route('balance.create') }}" style="font-weight: bold; color: var(--main-color);">予算設定</a>
+                <a href="{{ route('balance.list') }}" style="font-weight: bold; color: var(--main-color);">予算設定</a>
             </div>
 
             <template v-if="message">
