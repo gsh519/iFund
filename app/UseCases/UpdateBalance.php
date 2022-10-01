@@ -8,13 +8,20 @@ use Illuminate\Http\Request;
 
 class UpdateBalance
 {
+    private $insert_value;
     public function __invoke(Request $request)
     {
+        $this->insert_value = (int)$request->balance_value;
+
         // すでにBalanceがある場合それを返す
         $balance = $this->retrieveBalance($request);
+
         if ($balance) {
-            $balance->initial_value = $request->balance_value;
-            $balance->current_value = $request->balance_value;
+            $balance->initial_value = $this->insert_value;
+            foreach ($balance->payments as $payment) {
+                $this->insert_value -= $payment->value;
+            }
+            $balance->current_value = $this->insert_value;
             $balance->save();
             return $balance;
         } else {
@@ -32,8 +39,9 @@ class UpdateBalance
     private function retrieveBalance(Request $request): ?Balance
     {
         return Balance::query()
-            ->where('balance_year', $request->year)
-            ->where('balance_month', $request->month)
+            ->with('payments')
+            ->where('balance_year', $request->balance_year)
+            ->where('balance_month', $request->balance_month)
             ->first();
     }
 
@@ -46,11 +54,11 @@ class UpdateBalance
     private function createBalance(Request $request): Balance
     {
         $balance = new Balance();
-        $balance->balance_year = $request->year;
-        $balance->balance_month = $request->month;
+        $balance->balance_year = $request->balance_year;
+        $balance->balance_month = $request->balance_month;
         $balance->date = Carbon::now();
-        $balance->initial_value = $request->balance_value;
-        $balance->current_value = $request->balance_value;
+        $balance->initial_value = $this->insert_value;
+        $balance->current_value = $this->insert_value;
         $balance->save();
 
         return $balance;

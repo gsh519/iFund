@@ -42,8 +42,8 @@
                 <h2 style="text-align: center; margin-bottom: 20px;">{{ $balance_year }}年{{ $balance_month }}月</h2>
                 <form action="{{ route('balance.create') }}" method="post">
                     @csrf
-                    <input type="hidden" name="year" value="{{ $balance_year }}">
-                    <input type="hidden" name="month" value="{{ $balance_month }}">
+                    <input type="hidden" name="balance_year" value="{{ $balance_year }}">
+                    <input type="hidden" name="balance_month" value="{{ $balance_month }}">
                     @if ($errors->any())
                     <div>
                         @foreach ($errors->all() as $error)
@@ -53,7 +53,7 @@
                     @endif
                     <div class="amount-area">
                         <label>残金額</label>
-                        <input type="number" name="balance_value" value="{{ $balance->current_value ?? 0 }}">
+                        <input style="text-align: right; width: 100%; font-size: 28px; margin-top: 10px;" type="number" name="balance_value" value="{{ $balance->current_value ?? 0 }}">
                     </div>
                     <div class="button-area" style="margin-top: 16px;">
                         <button type="submit">

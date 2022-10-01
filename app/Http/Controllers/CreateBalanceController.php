@@ -44,8 +44,8 @@ class CreateBalanceController extends Controller
         $updated_balance = $UpdateBalance($request);
 
         return view('balance', [
-            'today_year' => $request->year,
-            'next_month' => $request->month,
+            'balance_year' => $request->balance_year,
+            'balance_month' => $request->balance_month,
             'balance' => $updated_balance,
         ]);
     }
