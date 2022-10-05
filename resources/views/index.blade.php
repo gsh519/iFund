@@ -206,7 +206,6 @@
              */
             fetchBalance(payload_year = null, payload_month = null) {
                 this.loading++;
-                console.log(this.loading);
                 // 日付を渡したい
                 let year = (payload_year === null) ? this.today.getFullYear() : payload_year;
                 let month = (payload_month === null) ? this.today.getMonth() + 1 : payload_month + 1;
@@ -291,14 +290,11 @@
             },
             // データベースに保存
             savePayment(payment, memo, payment_date) {
-                console.log(payment_date);
                 axios.post('/payment/create', {
                     memo: memo,
                     value: payment,
                     payment_date: payment_date,
-                }).then(res => {
-                    this.fetchBalance(res.data.balance_year, res.data.balance_month - 1);
-                }).catch(err => {});
+                }).then(res => {}).catch(err => {});
             },
 
             /**
@@ -318,7 +314,6 @@
                         payment_date: payment_date,
                     })
                     .then(res => {
-                        this.fetchBalance(res.data.balance_year, res.data.balance_month - 1);
                         this.payment_id = null;
                     }).catch(err => {});
             },
