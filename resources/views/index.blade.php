@@ -26,6 +26,7 @@
 <body>
     <div id="app">
         <header>
+            <img src="{{ asset('assets/images/header_logo.png') }}" alt="ロゴ" style="width: 30px;">
             <h1>
                 <a href="{{ route('home') }}" style="width: 100%; display: block; color: #fff;">
                     iFund
