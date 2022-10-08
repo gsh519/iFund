@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('assets/css/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}">
 
     <style>
         body {
@@ -26,7 +26,6 @@
 <body>
     <div id="app">
         <header>
-            <img src="{{ asset('assets/images/header_logo.png') }}" alt="ロゴ" style="width: 30px;">
             <h1>
                 <a href="{{ route('home') }}" style="width: 100%; display: block; color: #fff;">
                     iFund
